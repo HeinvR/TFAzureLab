@@ -56,9 +56,17 @@ resource "azurerm_network_interface" "nic_srv1" {
   ip_configuration {
     name                          = "internal"
     private_ip_address_allocation = "Dynamic"
+    public_ip_address_id = azurerm_public_ip.pip_srv1.id
     subnet_id = lookup(azurerm_subnet.subnets, "LAN").id
   }
   depends_on = [azurerm_subnet.subnets]
+}
+
+resource "azurerm_public_ip" "pip_srv1" {
+  name                = "${var.env_prefix}_srv1_pip"
+  resource_group_name = azurerm_resource_group.srv1_rg.name
+  location            = azurerm_resource_group.srv1_rg.location
+  allocation_method   = "Static"
 }
 
 resource "azurerm_windows_virtual_machine" "vm_srv1" {
