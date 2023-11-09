@@ -94,3 +94,54 @@ resource "azurerm_windows_virtual_machine" "vm_srv1" {
     version   = "latest"
   }
 }
+
+resource "azurerm_virtual_machine_extension" "srv1_dsc_pull" {
+  name                 = "srv1_dsc_pull"
+  virtual_machine_id   = azurerm_windows_virtual_machine.vm_srv1.id
+  publisher            = "Microsoft.Powershell"
+  type                 = "DSC"
+  type_handler_version = "2.83"
+
+  settings = <<SETTINGS_JSON
+        {
+          "configurationArguments": {
+              "RegistrationUrl": "${azurerm_automation_account.aa.dsc_server_endpoint}",
+              "NodeConfigurationName": "srv1.localhost",
+              "ConfigurationMode": "ApplyandAutoCorrect",
+              "ConfigurationModeFrequencyMins": 15,
+              "RefreshFrequencyMins": 30,
+              "RebootNodeIfNeeded": false,
+              "ActionAfterReboot": "continueConfiguration",
+              "AllowModuleOverwrite": true
+          }
+        }
+    SETTINGS_JSON
+
+  protected_settings = <<PROTECTED_SETTINGS_JSON
+    {
+      "configurationArguments": {
+         "RegistrationKey": {
+                  "UserName": "PLACEHOLDER_DONOTUSE",
+                  "Password": "${azurerm_automation_account.aa.dsc_primary_access_key}"
+                }
+      }
+    }
+PROTECTED_SETTINGS_JSON
+}
+
+resource "azurerm_automation_dsc_configuration" "dsc_config_pull" {
+  name                    = "srv1"
+  resource_group_name     = azurerm_resource_group.aa_rg.name
+  automation_account_name = azurerm_automation_account.aa.name
+  location                = azurerm_resource_group.aa_rg.location
+  content_embedded        = "configuration srv1 {}"
+}
+
+resource "azurerm_automation_dsc_nodeconfiguration" "dsc_node_config_pull" {
+  name                    = "srv1.localhost"
+  resource_group_name     = azurerm_resource_group.aa_rg.name
+  automation_account_name = azurerm_automation_account.aa.name
+  depends_on              = [azurerm_automation_dsc_configuration.dsc_config_pull]
+
+  content_embedded = file("${path.module}/mof/srv1.mof")
+}
