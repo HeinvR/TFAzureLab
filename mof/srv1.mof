@@ -1,47 +1,22 @@
-/*
-@TargetNode='localhost'
-@GeneratedBy=Hein
-@GenerationDate=11/03/2023 18:55:00
-@GenerationHost=HRK-HV-DEV1
-*/
-
 instance of MSFT_FileDirectoryConfiguration as $MSFT_FileDirectoryConfiguration1ref
 {
-SourceInfo = "C:\\Users\\Hein\\Documents\\AzurePolicy\\dc1.ps1::6::9::File";
+ SourceInfo = "C:\\Users\\Hein\\Documents\\AzurePolicy\\srv1.ps1::6::9::File";
  Type = "Directory";
  DestinationPath = "C:\\SQL2017\\SQLData\\";
  ResourceID = "[File]CreateDataDir";
  ModuleName = "PSDesiredStateConfiguration";
- Ensure = "Present";
-
-ModuleVersion = "1.0";
-
- ConfigurationName = "localhost";
+ Ensure = "Present"; 
+ ModuleVersion = "1.0";
+ ConfigurationName = "CreateDir";
 
 };
 instance of OMI_ConfigurationDocument
-
-
-                    {
+{
  Version="2.0.0";
-
-
-                        MinimumCompatibleVersion = "1.0.0";
-
-
-                        CompatibleVersionAdditionalProperties= {"Omi_BaseResource:ConfigurationName"};
-
-
-                        Author="Hein";
-
-
-                        GenerationDate="11/03/2023 18:55:00";
-
-
-                        GenerationHost="HRK-HV-DEV1";
-
-
-                        Name="localhost";
-
-
-                    };
+    MinimumCompatibleVersion = "1.0.0";
+    CompatibleVersionAdditionalProperties= {"Omi_BaseResource:ConfigurationName"};
+    Author="Hein";
+    GenerationDate="11/03/2023 18:55:00";
+    GenerationHost="HRK-HV-DEV1";
+    Name="srv1";
+};

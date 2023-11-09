@@ -106,7 +106,7 @@ resource "azurerm_virtual_machine_extension" "srv1_dsc_pull" {
         {
           "configurationArguments": {
               "RegistrationUrl": "${azurerm_automation_account.aa.dsc_server_endpoint}",
-              "NodeConfigurationName": "srv1.localhost",
+              "NodeConfigurationName": "${azurerm_windows_virtual_machine.vm_srv1.name}.localhost",
               "ConfigurationMode": "ApplyandAutoCorrect",
               "ConfigurationModeFrequencyMins": 15,
               "RefreshFrequencyMins": 30,
@@ -130,15 +130,15 @@ PROTECTED_SETTINGS_JSON
 }
 
 resource "azurerm_automation_dsc_configuration" "dsc_config_pull" {
-  name                    = "srv1"
+  name                    = "${azurerm_windows_virtual_machine.vm_srv1.name}"
   resource_group_name     = azurerm_resource_group.aa_rg.name
   automation_account_name = azurerm_automation_account.aa.name
   location                = azurerm_resource_group.aa_rg.location
-  content_embedded        = "configuration srv1 {}"
+  content_embedded        = "configuration ${azurerm_windows_virtual_machine.vm_srv1.name} {}"
 }
 
 resource "azurerm_automation_dsc_nodeconfiguration" "dsc_node_config_pull" {
-  name                    = "srv1.localhost"
+  name                    = "${azurerm_windows_virtual_machine.vm_srv1.name}.localhost"
   resource_group_name     = azurerm_resource_group.aa_rg.name
   automation_account_name = azurerm_automation_account.aa.name
   depends_on              = [azurerm_automation_dsc_configuration.dsc_config_pull]
