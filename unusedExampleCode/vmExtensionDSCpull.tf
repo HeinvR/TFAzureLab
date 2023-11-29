@@ -47,5 +47,5 @@ resource "azurerm_automation_dsc_nodeconfiguration" "dsc_node_config_pull" {
   name                    = "${azurerm_windows_virtual_machine.vm_srv1.name}.localhost"
   resource_group_name     = azurerm_resource_group.aa_rg.name
   automation_account_name = azurerm_automation_account.aa.name
-  content_embedded = file("${path.module}/mof/srv1_pull.mof")
+  content_embedded = file("${path.module}/unusedExampleCode/mof/srv1_pull.mof")
 }

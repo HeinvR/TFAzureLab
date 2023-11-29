@@ -94,3 +94,45 @@ resource "azurerm_windows_virtual_machine" "vm_srv1" {
     version   = "latest"
   }
 }
+
+resource "azurerm_virtual_machine_extension" "gc_srv1" {
+  name                       = "AzurePolicyforWindows"
+  virtual_machine_id         = azurerm_windows_virtual_machine.vm_srv1.id
+  publisher                  = "Microsoft.GuestConfiguration"
+  type                       = "ConfigurationforWindows"
+  type_handler_version       = "1.29"
+  auto_upgrade_minor_version = "true"
+}
+
+resource "azurerm_policy_virtual_machine_configuration_assignment" "gc_srv1_assign" {
+  name               = "AzureWindowsBaseline"
+  location           = azurerm_windows_virtual_machine.vm_srv1.location
+  virtual_machine_id = azurerm_windows_virtual_machine.vm_srv1.id
+
+  configuration {
+    assignment_type = "ApplyAndMonitor"
+    version         = "1.*"
+
+    parameter {
+      name  = "Minimum Password Length;ExpectedValue"
+      value = "16"
+    }
+    parameter {
+      name  = "Minimum Password Age;ExpectedValue"
+      value = "0"
+    }
+    parameter {
+      name  = "Maximum Password Age;ExpectedValue"
+      value = "30,45"
+    }
+    parameter {
+      name  = "Enforce Password History;ExpectedValue"
+      value = "10"
+    }
+    parameter {
+      name  = "Password Must Meet Complexity Requirements;ExpectedValue"
+      value = "1"
+    }
+  }
+  depends_on = [azurerm_virtual_machine_extension.gc_srv1]
+}
