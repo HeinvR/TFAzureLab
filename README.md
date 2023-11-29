@@ -11,8 +11,4 @@ This repo can be used to spin up a small test env with the following resources
 
 - Azure Automation account
 
-- Log Analytis workspace
-
-- Storage account
-
 The "unusedExampleCode" directory contains example code to alter the default deployment
